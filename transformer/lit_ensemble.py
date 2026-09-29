@@ -44,8 +44,8 @@ class LitEnsemble(pl.LightningModule):
     def test_epoch_end(self, outputs) -> None:
         exp_rate = self.recorder.compute()
 
-        print(f"ExpRate: {exp_rate}")
-        print(f"length of total file: {len(outputs)}")
+        print(f"認識率: {exp_rate}")
+        print(f"全ファイル数: {len(outputs)}")
 
         with zipfile.ZipFile("result.zip", "w") as zip_f:
             for d in outputs:

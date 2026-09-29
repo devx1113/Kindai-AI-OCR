@@ -86,18 +86,18 @@ def cv2_putText_1(img, text, org, fontFace, fontScale, color):
 
     
 
-parser = argparse.ArgumentParser(description='Kindai document Recognition')
+parser = argparse.ArgumentParser(description='Kindai 文書認識')
 #params for text detection
-parser.add_argument('--trained_model', default='./pretrain/synweights_4600.pth', type=str, help='pretrained model')
-parser.add_argument('--text_threshold', default=0.7, type=float, help='text confidence threshold')
-parser.add_argument('--low_text', default=0.4, type=float, help='text low-bound score')
-parser.add_argument('--link_threshold', default=0.4, type=float, help='link confidence threshold')
-parser.add_argument('--cuda', default=True, type=str2bool, help='Use cuda to train model')
-parser.add_argument('--canvas_size', default=1000, type=int, help='image size for inference')
-parser.add_argument('--mag_ratio', default=2, type=float, help='image magnification ratio')
-parser.add_argument('--poly', default=False, action='store_true', help='enable polygon type')
-parser.add_argument('--show_time', default=True, action='store_true', help='show processing time')
-parser.add_argument('--test_folder', default='/data/', type=str, help='folder path to input images')
+parser.add_argument('--trained_model', default='./pretrain/synweights_4600.pth', type=str, help='学習済みモデル')
+parser.add_argument('--text_threshold', default=0.7, type=float, help='テキスト信頼度のしきい値')
+parser.add_argument('--low_text', default=0.4, type=float, help='テキスト信頼度の下限')
+parser.add_argument('--link_threshold', default=0.4, type=float, help='リンク信頼度のしきい値')
+parser.add_argument('--cuda', default=True, type=str2bool, help='CUDA を使用する')
+parser.add_argument('--canvas_size', default=1000, type=int, help='推論時の画像サイズ')
+parser.add_argument('--mag_ratio', default=2, type=float, help='画像の拡大率')
+parser.add_argument('--poly', default=False, action='store_true', help='ポリゴン形式を有効にする')
+parser.add_argument('--show_time', default=True, action='store_true', help='処理時間を表示する')
+parser.add_argument('--test_folder', default='/data/', type=str, help='入力画像のフォルダー')
 
 #params for text recognition
 parser.add_argument('--model_path', default='./pretrain/WAP_params.pkl', type=str)
@@ -108,7 +108,7 @@ parser.add_argument('--dictionary_target', default='./pretrain/kindai_voc.txt', 
 args = parser.parse_args()
 
 
-""" For test images in a folder """
+"""フォルダー内のテスト画像を処理する"""
 image_list, _, _ = file_utils.get_files('./data/test')
 
 result_folder = './data/result/'
@@ -154,7 +154,7 @@ def test_net(net, image, text_threshold, link_threshold, low_text, cuda, poly):
     render_img = np.hstack((render_img, score_link))
     ret_score_text = imgproc.cvt2HeatmapImg(render_img)
 
-    if args.show_time : print("\ninfer/postproc time : {:.3f}/{:.3f}".format(t0, t1))
+    if args.show_time : print("\n推論/後処理時間: {:.3f}/{:.3f}".format(t0, t1))
 
     return boxes, polys, ret_score_text
 
@@ -164,7 +164,7 @@ def test(text_detection_modelpara, ocr_modelpara, dictionary_target):
     # load net
     net = CRAFT()     # initialize
 
-    print('Loading text detection model from checkpoint {}'.format(text_detection_modelpara))
+    print('チェックポイントからテキスト検出モデルを読み込み中: {}'.format(text_detection_modelpara))
     if args.cuda:
         net.load_state_dict(copyStateDict(torch.load(text_detection_modelpara)))
     else:
@@ -218,9 +218,9 @@ def test(text_detection_modelpara, ocr_modelpara, dictionary_target):
     
     paper = ET.Element('paper') 
     paper.set('xmlns', "http://codh.rois.ac.jp/modern-magazine/")
-    # load data
+    # データを読み込む
     for k, image_path in enumerate(image_list[:]):
-        print("Test image {:d}/{:d}: {:s}".format(k+1, len(image_list), image_path), end='\r')
+        print("テスト画像 {:d}/{:d}: {:s}".format(k+1, len(image_list), image_path), end='\r')
         res_img_file = result_folder + "res_" + os.path.basename(image_path)
 
         #print (res_img_file, os.path.basename(image_path), os.path.exists(res_img_file)) 
@@ -329,7 +329,7 @@ def test(text_detection_modelpara, ocr_modelpara, dictionary_target):
             image = cv2_putText_1(img = image, text = result, org = (min_x, max_x, min_y, max_y), fontFace = fontPIL, fontScale = size, color = colorBGR)
 
 
-        print('save image')    
+        print('画像を保存中')
         # save score text
         filename, file_ext = os.path.splitext(os.path.basename(image_path))
         mask_file = result_folder + "/res_" + filename + '_mask.jpg'
@@ -343,7 +343,7 @@ def test(text_detection_modelpara, ocr_modelpara, dictionary_target):
     fout.close()
 
 
-    print("elapsed time : {}s".format(time.time() - t))
+    print("経過時間: {} 秒".format(time.time() - t))
 
 if __name__ == "__main__":
     test(args.trained_model, args.model_path, args.dictionary_target)

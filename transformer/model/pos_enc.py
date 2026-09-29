@@ -24,7 +24,7 @@ class WordPosEnc(pl.LightningModule):
         self.register_buffer("pe", pe)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """add positional encoding to feature
+        """特徴量に位置エンコーディングを追加する
 
         Parameters
         ----------
@@ -61,13 +61,13 @@ class ImgPosEnc(pl.LightningModule):
         self.temperature = temperature
         self.normalize = normalize
         if scale is not None and normalize is False:
-            raise ValueError("normalize should be True if scale is passed")
+            raise ValueError("scale を指定する場合、normalize は True にしてください")
         if scale is None:
             scale = 2 * math.pi
         self.scale = scale
 
     def forward(self, x: torch.Tensor, mask: torch.LongTensor) -> torch.Tensor:
-        """add image positional encoding to feature
+        """特徴量に画像位置エンコーディングを追加する
 
         Parameters
         ----------
@@ -135,7 +135,7 @@ class WordRotaryEmbed(pl.LightningModule):
         self.register_buffer("inv_freq", inv_freq)
 
     def forward(self, x: torch.FloatTensor):
-        """apply positional encoding to feature
+        """特徴量に位置エンコーディングを適用する
 
         Parameters
         ----------
@@ -176,13 +176,13 @@ class ImageRotaryEmbed(pl.LightningModule):
         self.temperature = temperature
         self.normalize = normalize
         if scale is not None and normalize is False:
-            raise ValueError("normalize should be True if scale is passed")
+            raise ValueError("scale を指定する場合、normalize は True にしてください")
         if scale is None:
             scale = 2 * math.pi
         self.scale = scale
 
     def forward(self, x: torch.Tensor, mask: torch.LongTensor) -> torch.Tensor:
-        """apply image positional encoding to feature
+        """特徴量に画像位置エンコーディングを適用する
 
         Parameters
         ----------

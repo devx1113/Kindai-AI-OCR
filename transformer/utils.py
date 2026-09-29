@@ -63,7 +63,7 @@ class ExpRateRecorder(Metric):
 def ce_loss(
     output_hat: torch.Tensor, output: torch.Tensor, ignore_idx: int = vocab.PAD_IDX
 ) -> torch.Tensor:
-    """comput cross-entropy loss
+    """交差エントロピー損失を計算する
 
     Args:
         output_hat (torch.Tensor): [batch, len, e]
@@ -82,7 +82,7 @@ def ce_loss(
 def to_tgt_output(
     tokens: List[List[int]], direction: str, device: torch.device
 ) -> Tuple[LongTensor, LongTensor]:
-    """Generate tgt and out for indices
+    """インデックスから tgt と out を生成する
 
     Parameters
     ----------
@@ -137,7 +137,7 @@ def to_tgt_output(
 def to_bi_tgt_out(
     tokens: List[List[int]], device: torch.device
 ) -> Tuple[LongTensor, LongTensor]:
-    """Generate bidirection tgt and out
+    """双方向の tgt と out を生成する
 
     Parameters
     ----------

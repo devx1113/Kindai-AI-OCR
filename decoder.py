@@ -2,19 +2,19 @@ import torch
 import torch.nn as nn
 
 
-# two layers of GRU
+# GRU を 2 層使用
 class Gru_cond_layer(nn.Module):
     def __init__(self, params):
         super(Gru_cond_layer, self).__init__()
         self.cuda = params['cuda']
-        # attention
+        # アテンション
         self.conv_Ua = nn.Conv2d(params['D'], params['dim_attention'], kernel_size=1)
         self.fc_Wa = nn.Linear(params['n'], params['dim_attention'], bias=False)
         self.conv_Q = nn.Conv2d(1, 512, kernel_size=11, bias=False, padding=5)
         self.fc_Uf = nn.Linear(512, params['dim_attention'])
         self.fc_va = nn.Linear(params['dim_attention'], 1)
 
-        # the first GRU layer
+        # 1 層目の GRU
         self.fc_Wyz = nn.Linear(params['m'], params['n'])
         self.fc_Wyr = nn.Linear(params['m'], params['n'])
         self.fc_Wyh = nn.Linear(params['m'], params['n'])

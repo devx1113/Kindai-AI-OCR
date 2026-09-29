@@ -125,8 +125,8 @@ class LitBTTR(pl.LightningModule):
         )
         best_hyp = max(hyps, key=lambda h: h.score / (len(h) ** self.hparams.alpha))
         
-        print('prediction ', best_hyp.seq)
-        print('groundtruth ', batch.indices[0])
+        print('推論結果 ', best_hyp.seq)
+        print('正解データ ', batch.indices[0])
 
         self.exprate_recorder(best_hyp.seq, batch.indices[0])
         self.log(
@@ -148,9 +148,9 @@ class LitBTTR(pl.LightningModule):
 
     def test_epoch_end(self, test_outputs) -> None:
         exprate = self.exprate_recorder.compute()
-        print(f"ExpRate: {exprate}")
+        print(f"認識率: {exprate}")
 
-        print(f"length of total file: {len(test_outputs)}")
+        print(f"全ファイル数: {len(test_outputs)}")
         with zipfile.ZipFile("result.zip", "w") as zip_f:
             for img_base, pred in test_outputs:
                 content = f"%{img_base}\n${pred}$".encode()

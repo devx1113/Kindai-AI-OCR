@@ -2,7 +2,7 @@ import numpy as np
 
 
 def fit_line(p1, p2):
-    # fit a line ax+by+c = 0
+    # 直線 ax+by+c = 0 を当てはめる
     if p1[0] == p1[1]:
         return [1., 0., -p1[0]]
     else:
@@ -11,12 +11,12 @@ def fit_line(p1, p2):
 
 
 def line_cross_point(line1, line2):
-    # line1 0= ax+by+c, compute the cross point of line1 and line2
+    # line1 0= ax+by+c として、line1 と line2 の交点を求める
     if line1[0] != 0 and line1[0] == line2[0]:
-        print('Cross point does not exist')
+        print('交点が存在しません')
         return None
     if line1[0] == 0 and line2[0] == 0:
-        print('Cross point does not exist')
+        print('交点が存在しません')
         return None
     if line1[1] == 0:
         x = -line1[2]
@@ -33,7 +33,7 @@ def line_cross_point(line1, line2):
 
 
 def line_verticle(line, point):
-    # get the verticle line from line across point
+    # 交点を通る垂線を求める
     if line[1] == 0:
         verticle = [0, -1, point[1]]
     else:

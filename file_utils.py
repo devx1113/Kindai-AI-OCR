@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 import imgproc
 
-# borrowed from https://github.com/lengstrom/fast-style-transfer/blob/master/src/utils.py
+# https://github.com/lengstrom/fast-style-transfer/blob/master/src/utils.py を参考にした処理
 def get_files(img_dir):
     imgs, masks, xmls = list_files(img_dir)
     return imgs, masks, xmls
@@ -31,7 +31,7 @@ def list_files(in_path):
     return img_files, mask_files, gt_files
 
 def saveResult(img_file, img, boxes, dirname='./result/', verticals=None, texts=None):
-        """ save text detection result one by one
+        """テキスト検出結果を 1 件ずつ保存する
         Args:
             img_file (str): image file name
             img (array): raw image context

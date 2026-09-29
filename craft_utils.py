@@ -8,21 +8,21 @@ import numpy as np
 import cv2
 import math
 
-""" auxilary functions """
-# unwarp corodinates
+"""補助関数"""
+# 座標の歪みを補正する
 def warpCoord(Minv, pt):
     out = np.matmul(Minv, (pt[0], pt[1], 1))
     return np.array([out[0]/out[2], out[1]/out[2]])
-""" end of auxilary functions """
+"""補助関数ここまで"""
 
 
 def getDetBoxes_core(textmap, linkmap, text_threshold, link_threshold, low_text):
-    # prepare data
+    # データを準備する
     linkmap = linkmap.copy()
     textmap = textmap.copy()
     img_h, img_w = textmap.shape
 
-    """ labeling method """
+    """ラベリング処理"""
     ret, text_score = cv2.threshold(textmap, low_text, 1, 0)
     ret, link_score = cv2.threshold(linkmap, link_threshold, 1, 0)
 
@@ -32,22 +32,22 @@ def getDetBoxes_core(textmap, linkmap, text_threshold, link_threshold, low_text)
     det = []
     mapper = []
     for k in range(1,nLabels):
-        # size filtering
+        # サイズでフィルタリング
         size = stats[k, cv2.CC_STAT_AREA]
         if size < 10: continue
 
-        # thresholding
+        # しきい値処理
         if np.max(textmap[labels==k]) < text_threshold: continue
 
-        # make segmentation map
+        # セグメンテーションマップを作成
         segmap = np.zeros(textmap.shape, dtype=np.uint8)
         segmap[labels==k] = 255
-        segmap[np.logical_and(link_score==1, text_score==0)] = 0   # remove link area
+        segmap[np.logical_and(link_score==1, text_score==0)] = 0   # リンク領域を除去
         x, y = stats[k, cv2.CC_STAT_LEFT], stats[k, cv2.CC_STAT_TOP]
         w, h = stats[k, cv2.CC_STAT_WIDTH], stats[k, cv2.CC_STAT_HEIGHT]
         niter = int(math.sqrt(size * min(w, h) / (w * h)) * 2)
         sx, ex, sy, ey = x - niter, x + w + niter + 1, y - niter, y + h + niter + 1
-        # boundary check
+        # 境界を確認
         if sx < 0 : sx = 0
         if sy < 0 : sy = 0
         if ex >= img_w: ex = img_w
@@ -110,7 +110,7 @@ def getPoly_core(boxes, labels, mapper, linkmap):
         word_label[word_label != cur_label] = 0
         word_label[word_label > 0] = 1
 
-        """ Polygon generation """
+        """ポリゴンを生成"""
         # find top/bottom contours
         cp = []
         max_len = -1

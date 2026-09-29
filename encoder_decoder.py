@@ -5,7 +5,7 @@ from encoder import DenseNet
 from decoder import Gru_cond_layer, Gru_prob
 
 
-# create gru init state
+# GRU の初期状態を作成
 class FcLayer(nn.Module):
     def __init__(self, nin, nout):
         super(FcLayer, self).__init__()
@@ -16,7 +16,7 @@ class FcLayer(nn.Module):
         return out
 
 
-# Embedding
+# 埋め込み
 class My_Embedding(nn.Module):
     def __init__(self, params):
         super(My_Embedding, self).__init__()
@@ -30,7 +30,7 @@ class My_Embedding(nn.Module):
                 emb.cuda()
         else:
             emb = self.embedding(y)
-            if len(emb.shape) == 3:  # only for training stage
+            if len(emb.shape) == 3:  # 学習時のみ
                 emb_shifted = torch.zeros([emb.shape[0], emb.shape[1], params['m']], dtype=torch.float32)
                 if self.cuda:
                     emb_shifted.cuda()

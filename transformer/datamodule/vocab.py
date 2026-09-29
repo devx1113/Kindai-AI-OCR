@@ -24,10 +24,10 @@ class CROHMEVocab:
             for line in f.readlines():
                 w, idx = line.split('\t')
                 self.word2idx[w] = len(self.word2idx)
-        print(f'dictionary path {dict_path}')
+        print(f'辞書のパス: {dict_path}')
         self.idx2word: Dict[int, str] = {v: k for k, v in self.word2idx.items()}
 
-        print(f"Init vocab with size: {len(self.word2idx)}")
+        print(f"語彙を初期化しました。サイズ: {len(self.word2idx)}")
         
     def words2indices(self, words: List[str]) -> List[int]:
         return [self.word2idx[w] for w in words]

@@ -2,36 +2,36 @@
 
 
 # Kindai-OCR
-OCR system for recognizing modern Japanese magazines
+近代日本語雑誌を認識する OCR システム
 
-# Updates:
-Kindai V2.0 employed Transformer OCR for text recognition. Transformer OCR was trained on NDL and CODH datasets.
+# 更新履歴
+Kindai V2.0 では、文字認識に Transformer OCR を採用しました。Transformer OCR は NDL と CODH のデータセットで学習しています。
 
-## About
+## 概要
 
-This repo contains an OCR system for converting modern Japanese images to text. The software has been developed by Dr. Anh Duc Le, while he was working for <a href="http://codh.rois.ac.jp/">ROIS-DS Center for Open Data in the Humanities</a>.
+このリポジトリには、近代日本語の画像をテキストへ変換する OCR システムが含まれています。本ソフトウェアは、Anh Duc Le 博士が <a href="http://codh.rois.ac.jp/">ROIS-DS 人文学オープンデータ共同利用センター</a>在籍時に開発しました。
 
-The system has 2 main modules: text line extraction and text line recognition. The overall architecture is shown in the below figures.
+システムは、テキスト行抽出とテキスト行認識の 2 つの主要モジュールで構成されています。全体構成を以下の図に示します。
 
-### Text line extraction
-We retrain the CRAFT (Character Region Awareness for Text Detection) on 1000 annotated images provided by Center for Research and Development of Higher Education, The University of Tokyo.
+### テキスト行抽出
+東京大学大学院教育学研究科附属学校教育高度化・効果検証センターから提供されたアノテーション付き画像 1,000 枚を使い、CRAFT (Character Region Awareness for Text Detection) を再学習しています。
 
 <img src="./images/TextlineExtraction.jpg" height="200" />
 
-### Text line recognition
-For Kindai V1.0, we employ the attention-based encoder-decoder on our previous publication. We train the text line recognition on 1000 annotated images and 1600 unannotated images provided by Center for Research and Development of Higher Education, The University of Tokyo and National Institute for Japanese Language and Linguistics, respectively.     
+### テキスト行認識
+Kindai V1.0 では、過去の研究で使用した attention-based encoder-decoder を採用しています。東京大学大学院教育学研究科附属学校教育高度化・効果検証センターから提供されたアノテーション付き画像 1,000 枚と、国立国語研究所から提供された未アノテーション画像 1,600 枚を使ってテキスト行認識を学習しています。
     
 <img src="./images/kindai_v1.jpg" height="200" />
 
-For Kindai V2.0, we trained a transformer with more data from National Diet Library (NDL) and The Center for Open Data in The Humanities (CODH).
-[NDL dataset](https://github.com/ndl-lab/pdmocrdataset-part2) contains 3,997 pages, 103,256 lines and [CODH dataset](http://codh.rois.ac.jp/modern-magazine/dataset/) contains 1985 pages and 59,465 lines.     
+Kindai V2.0 では、国立国会図書館 (NDL) と人文学オープンデータ共同利用センター (CODH) のより大規模なデータを使って Transformer を学習しました。
+[NDL データセット](https://github.com/ndl-lab/pdmocrdataset-part2)には 3,997 ページ、103,256 行が含まれ、[CODH データセット](http://codh.rois.ac.jp/modern-magazine/dataset/)には 1,985 ページ、59,465 行が含まれています。
 
      
 <img src="./images/kindai_v2.png" height="200" />
 
 
 
-## Installing Kindai OCR
+## Kindai OCR のインストール
 
 ```Python==3.7.11         
 torch==1.7.0     
@@ -47,43 +47,43 @@ editdistance==0.5.3
 ```  
 
 
-## Running Kindai OCR
-### Pre-trained Models
+## Kindai OCR の実行
+### 学習済みモデル
 
-Before running the project, please download the pre-trained models from the shared Google Drive folder and place all model files in the `./pretrain/` directory.
+実行前に共有 Google Drive フォルダーから学習済みモデルをダウンロードし、すべてのモデルファイルを `./pretrain/` ディレクトリに配置してください。
 
 **Google Drive:**
 https://drive.google.com/drive/folders/15yOzVijhHgmj9AQ0X8yK5RVSqQZlPTYf?usp=drive_link
 
-The folder contains the following pre-trained models:
+フォルダーには次の学習済みモデルが含まれています。
 
-| File | Description |
+| ファイル | 説明 |
 |------|-------------|
-| `synweights_4600.pth` | Text line detection model |
-| `WAP_params.pkl` | Kindai line recognition model (Version 1, attention-based) |
-| `transformer.ckpt` | Kindai line recognition model (Version 2, Transformer-based) |
+| `synweights_4600.pth` | テキスト行検出モデル |
+| `WAP_params.pkl` | Kindai 行認識モデル (Version 1、attention-based) |
+| `transformer.ckpt` | Kindai 行認識モデル (Version 2、Transformer-based) |
 
-- Copy your images into ./data/test/ folder   
-- run the following script to recognize images:   
+- 画像を `./data/test/` フォルダーにコピーします。
+- 次のスクリプトを実行して画像を認識します。
 `python test_kindai_1.0.py`   
 `python test_kindai_2.0.py`   
-- The recognized text transcription is in ./data/result.xml and the result images are in ./data/result/   
-- If you may have to check the path to Japanese font in test.py for correct visualization results.   
-    `fontPIL = '/usr/share/fonts/truetype/fonts-japanese-gothic.ttf' # japanese font`   
-- using --cuda = True for GPU device and Fasle for CPU device    
-- using --canvas_size ot set image size for text line detection   
- - An example result from our OCR system
+- 認識したテキストは `./data/result.xml` に、結果画像は `./data/result/` に出力されます。
+- 正しく可視化するには、`test.py` にある日本語フォントのパスを確認してください。
+    `fontPIL = '/usr/share/fonts/truetype/fonts-japanese-gothic.ttf' # 日本語フォント`
+- GPU を使う場合は `--cuda = True`、CPU を使う場合は `False` を指定します。
+- `--canvas_size` でテキスト行検出時の画像サイズを指定できます。
+- OCR システムによる実行結果の例
 
  <img src="./data/result1/res_k188701_021_39.jpg" width="500">
 
- ## Citation
- If you find Kindai OCR useful in your research, please consider citing:   
+ ## 引用
+Kindai OCR が研究に役立った場合は、次の文献を引用してください。
  Anh Duc Le, Daichi Mochihashi, Katsuya Masuda, Hideki Mima, and Nam Tuan Ly. 2019. Recognition of Japanese historical text lines by an attention-based encoder-decoder and text line generation. In Proceedings of the 5th International Workshop on Historical Document Imaging and Processing (HIP ’19). Association for Computing Machinery, New York, NY, USA, 37–41. DOI:https://doi.org/10.1145/3352631.3352641   
 
 
- ## Acknowledgment
+ ## 謝辞
 
-We thank The Center for Research and Development of Higher Education, The University of Tokyo, and National Institute for Japanese Language and Linguistics for providing the kindai datasets.     
+近代データセットを提供してくださった東京大学大学院教育学研究科附属学校教育高度化・効果検証センターおよび国立国語研究所に感謝します。
 
-## Contact
-Dr. Anh Duc Le, email: leducanh841988@gmail.com or anh@ism.ac.jp    
+## 連絡先
+Anh Duc Le 博士: leducanh841988@gmail.com または anh@ism.ac.jp

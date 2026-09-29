@@ -6,7 +6,7 @@ import pickle as pkl
 import torch
 from torch import nn
 
-# load data
+# データを読み込む
 def dataIterator(feature_file, label_file, dictionary, batch_size, batch_Imagesize, maxlen, maxImagesize):
     # offline-train.pkl
     fp = open(feature_file, 'rb')
@@ -55,10 +55,10 @@ def dataIterator(feature_file, label_file, dictionary, batch_size, batch_Imagesi
         lab = targets[uid]
         batch_image_size = biggest_image_size * (i + 1)
         if len(lab) > maxlen:
-            print('sentence', uid, 'length bigger than', maxlen, 'ignore')
+            print('文', uid, 'の長さが', maxlen, 'を超えたため無視します')
         elif size > maxImagesize:
             print(size)
-            print('image', uid, 'size bigger than', maxImagesize, 'ignore')
+            print('画像', uid, 'のサイズが', maxImagesize, 'を超えたため無視します')
         else:
             uidList.append(uid)
             if batch_image_size > batch_Imagesize or i == batch_size:  # a batch is full
@@ -79,7 +79,7 @@ def dataIterator(feature_file, label_file, dictionary, batch_size, batch_Imagesi
     # last batch
     feature_total.append(feature_batch)
     label_total.append(label_batch)
-    print('total ', len(feature_total), 'batch data loaded')
+    print('合計', len(feature_total), 'バッチのデータを読み込みました')
     return list(zip(feature_total, label_total)), uidList
 
 
@@ -92,7 +92,7 @@ def load_dict(dictFile):
     for l in stuff:
         w = l.strip().split()
         lexicon[w[0]] = int(w[1])
-    print('total words/phones', len(lexicon))
+    print('単語/文字の合計', len(lexicon))
     return lexicon
 
 

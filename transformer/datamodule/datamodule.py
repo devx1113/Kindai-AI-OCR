@@ -16,9 +16,9 @@ vocab = CROHMEVocab()
 
 Data = List[Tuple[str, Image.Image, List[str]]]
 
-MAX_SIZE = 32e4  # change here accroading to your GPU memory
+MAX_SIZE = 32e4  # GPU メモリに応じて変更
 
-# load data
+# データを読み込む
 def data_iterator(
     data: Data,
     batch_size: int,
@@ -46,10 +46,10 @@ def data_iterator(
             biggest_image_size = size
         batch_image_size = biggest_image_size * (i + 1)
         if len(lab) > maxlen:
-            print("sentence", i, "length bigger than", maxlen, "ignore")
+            print("文", i, "の長さが", maxlen, "を超えたため無視します")
         elif size > maxImagesize:
             print(
-                f"image: {fname} size: {fea.shape[1]} x {fea.shape[2]} =  bigger than {maxImagesize}, ignore"
+                f"画像: {fname} のサイズ {fea.shape[1]} x {fea.shape[2]} が {maxImagesize} を超えたため無視します"
             )
         else:
             if batch_image_size > batch_Imagesize or i == batch_size:  # a batch is full
@@ -75,21 +75,21 @@ def data_iterator(
     fname_total.append(fname_batch)
     feature_total.append(feature_batch)
     label_total.append(label_batch)
-    print("total ", len(feature_total), "batch data loaded")
+    print("合計", len(feature_total), "バッチのデータを読み込みました")
     return list(zip(fname_total, feature_total, label_total))
 
 
 def extract_data(archive: ZipFile, dir_name: str) -> Data:
-    """Extract all data need for a dataset from zip archive
+    """ZIP アーカイブからデータセットに必要なデータをすべて抽出する
 
     Args:
-        archive (ZipFile):
-        dir_name (str): dir name in archive zip (eg: train, test_2014......)
+        archive (ZipFile): ZIP アーカイブ
+        dir_name (str): ZIP 内のディレクトリ名 (例: train、test_2014)
 
     Returns:
-        Data: list of tuple of image and formula
+        Data: 画像と式のタプルのリスト
     """
-    print(f'data path {dir_name}')
+    print(f'データパス: {dir_name}')
     with archive.open(f"data_kindai/caption_{dir_name}.txt", "r") as f:
         captions = f.readlines()
     data = []
@@ -98,7 +98,7 @@ def extract_data(archive: ZipFile, dir_name: str) -> Data:
         img_name = tmp[0]
         formula = tmp[1:]
         with archive.open(f"data_kindai/{dir_name}/{img_name}.jpg", "r") as f:
-            # move image to memory immediately, avoid lazy loading, which will lead to None pointer error in loading
+            # 遅延読み込みによる None 参照エラーを避けるため、画像をすぐにメモリへ移す
             img = Image.open(f).copy()
         w = int(img.size[0])
         h = int(img.size[1])
@@ -118,7 +118,7 @@ def extract_data(archive: ZipFile, dir_name: str) -> Data:
         #print(img.size)
         data.append((img_name, img, formula))
 
-    print(f"Extract data from: {dir_name}, with data size: {len(data)}")
+    print(f"データを抽出しました: {dir_name}、データ数: {len(data)}")
 
     return data
 
@@ -187,7 +187,7 @@ class CROHMEDatamodule(pl.LightningDataModule):
         self.batch_size = batch_size
         self.num_workers = num_workers
 
-        print(f"Load data from: {self.zipfile_path}")
+        print(f"データを読み込みます: {self.zipfile_path}")
 
     def setup(self, stage: Optional[str] = None) -> None:
         with ZipFile(self.zipfile_path) as archive:

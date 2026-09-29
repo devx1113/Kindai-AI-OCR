@@ -42,7 +42,7 @@ def antipodal_pairs(convex_polygon):
     return l
 
 
-# returns score, area, points from top-left, clockwise , favouring low area
+# 左上から時計回りのスコア、面積、点を返す。面積が小さいものを優先する
 def mep(convex_polygon):
     def compute_parallelogram(convex_polygon, l, z1, z2):
         def parallel_vector(a, b, c):
@@ -50,7 +50,7 @@ def mep(convex_polygon):
             v1 = [b[0] - c[0], b[1] - c[1]]
             return [c[0] - v0[0] - v1[0], c[1] - v0[1] - v1[1]]
 
-        # finds intersection between lines, given 2 points on each line.
+        # 各直線上の 2 点から直線同士の交点を求める
         # (x1, y1), (x2, y2) on 1st line, (x3, y3), (x4, y4) on 2nd line.
         def line_intersection(x1, y1, x2, y2, x3, y3, x4, y4):
             px = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / (

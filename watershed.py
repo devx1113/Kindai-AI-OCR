@@ -67,7 +67,7 @@ def watershed1(image, viz=False):
             t, b = min(np_contours[:, 1]), max(np_contours[:, 1])
             box = np.array([[l, t], [r, t], [r, b], [l, b]], dtype=np.float32)
 
-        # make clock-wise order
+        # 時計回りに並べる
         startidx = box.sum(axis=1).argmin()
         box = np.roll(box, 4 - startidx, 0)
         box = np.array(box)
@@ -76,11 +76,11 @@ def watershed1(image, viz=False):
 
 
 def getDetCharBoxes_core(textmap, text_threshold=0.5, low_text=0.4):
-    # prepare data
+    # データを準備する
     textmap = textmap.copy()
     img_h, img_w = textmap.shape
 
-    """ labeling method """
+    """ラベリング処理"""
     ret, text_score = cv2.threshold(textmap, low_text, 1, 0)
     nLabels, labels, stats, centroids = cv2.connectedComponentsWithStats(text_score.astype(np.uint8),
                                                                          connectivity=4)
@@ -88,14 +88,14 @@ def getDetCharBoxes_core(textmap, text_threshold=0.5, low_text=0.4):
     det = []
     mapper = []
     for k in range(1, nLabels):
-        # size filtering
+        # サイズでフィルタリング
         size = stats[k, cv2.CC_STAT_AREA]
         if size < 10: continue
 
-        # thresholding
+        # しきい値処理
         if np.max(textmap[labels == k]) < text_threshold: continue
 
-        # make segmentation map
+        # セグメンテーションマップを作成
         segmap = np.zeros(textmap.shape, dtype=np.uint8)
         segmap[labels == k] = 255
         # segmap[np.logical_and(link_score == 1, text_score == 0)] = 0  # remove link area
